@@ -21,11 +21,8 @@ namespace WebET1
             {
                 conn.Open();
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand("catastro.sp_insertar_predio", conn))
+                using (NpgsqlCommand cmd = new NpgsqlCommand("CALL catastro.sp_insertar_predio_medio(@pre_codigo_catastral, @pre_fecha_ingreso, @pre_codigo_anterior, @pre_numero, @pre_nombre_predio, @pre_area_total_ter, @pre_area_total_const, @pre_fondo_relativo, @pre_frente_fondo, @pre_observaciones)", conn))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                    // Agregar los parámetros al procedimiento almacenado
                     cmd.Parameters.AddWithValue("pre_codigo_catastral", txtCodigoCatastral.Text);
                     cmd.Parameters.AddWithValue("pre_fecha_ingreso", DateTime.Now);
                     cmd.Parameters.AddWithValue("pre_codigo_anterior", txtCodigoAnterior.Text);
@@ -36,11 +33,10 @@ namespace WebET1
                     cmd.Parameters.AddWithValue("pre_fondo_relativo", Convert.ToDecimal(txtFondoRelativo.Text));
                     cmd.Parameters.AddWithValue("pre_frente_fondo", Convert.ToDecimal(txtFrenteFondo.Text));
                     cmd.Parameters.AddWithValue("pre_observaciones", txtObservaciones.Text);
-                    // Agregar los demás parámetros de forma similar...
 
-                    // Ejecutar el procedimiento
                     cmd.ExecuteNonQuery();
                 }
+
             }
 
             // Después de guardar, redirige a la página de listado o muestra un mensaje de éxito
