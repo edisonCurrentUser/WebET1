@@ -12,10 +12,8 @@ namespace WebET1
         { 
             if (!IsPostBack)
             {
-                // Obtener el ID del predio desde la URL
                 int preId = Convert.ToInt32(Request.QueryString["pre_id"]);
 
-                // Cargar los datos del predio
                 CargarPredio(preId);
             }
         }
@@ -34,7 +32,6 @@ namespace WebET1
                     {
                         if (reader.Read())
                         {
-                            // Cargar los datos del predio en los controles
                             txtCodigoCatastral.Text = reader["pre_codigo_catastral"].ToString();
                             txtCodigoAnterior.Text = reader["pre_codigo_anterior"].ToString();
                             txtNumero.Text = reader["pre_numero"].ToString();
@@ -60,17 +57,13 @@ namespace WebET1
             }
         }
 
-        // Método para guardar los cambios
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            // Obtener el ID del predio desde la URL
             int preId = Convert.ToInt32(Request.QueryString["pre_id"]);
 
-            // Variables para almacenar valores convertidos
             decimal fondoRelativo = 0, frenteFondo = 0, areaTerreno = 0, areaConstruccion = 0;
             int ampliBloque = 0, tipo = 0, estado = 0, dominio = 0, habitantes = 0;
 
-            // Validar y convertir los campos numéricos
             Decimal.TryParse(txtFondoRelativo.Text, out fondoRelativo);
             Decimal.TryParse(txtFrenteFondo.Text, out frenteFondo);
             Decimal.TryParse(txtAreaTerreno.Text, out areaTerreno);
@@ -86,39 +79,33 @@ namespace WebET1
             using (NpgsqlConnection conn = new NpgsqlConnection(connStr))
             {
                 conn.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand("catastro.sp_actualizar_predio", conn))  // Usar el esquema catastro
+                using (NpgsqlCommand cmd = new NpgsqlCommand("CALL catastro.sp_actualizar_predio_medio(@preId, @codigo, @codigoAnterior, @numero, @nombre, @areaTerreno, @areaConstruccion, @fondoRelativo, @frenteFondo, @observaciones, @dimPlanos, @otraFuente, @nuevoBloque, @ampliBloque, @tipo, @estado, @dominio, @direccion, @habitantes, @propietarioAnterior)", conn))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("preId", preId);
+                    cmd.Parameters.AddWithValue("codigo", txtCodigoCatastral.Text);
+                    cmd.Parameters.AddWithValue("codigoAnterior", txtCodigoAnterior.Text);
+                    cmd.Parameters.AddWithValue("numero", txtNumero.Text);
+                    cmd.Parameters.AddWithValue("nombre", txtNombrePredio.Text);
+                    cmd.Parameters.AddWithValue("areaTerreno", areaTerreno);
+                    cmd.Parameters.AddWithValue("areaConstruccion", areaConstruccion);
+                    cmd.Parameters.AddWithValue("fondoRelativo", fondoRelativo);
+                    cmd.Parameters.AddWithValue("frenteFondo", frenteFondo);
+                    cmd.Parameters.AddWithValue("observaciones", txtObservaciones.Text);
+                    cmd.Parameters.AddWithValue("dimPlanos", txtDimTomadoPlanos.Text);
+                    cmd.Parameters.AddWithValue("otraFuente", txtOtraFuenteInfo.Text);
+                    cmd.Parameters.AddWithValue("nuevoBloque", txtNumNuevoBloque.Text);
+                    cmd.Parameters.AddWithValue("ampliBloque", ampliBloque);
+                    cmd.Parameters.AddWithValue("tipo", tipo);
+                    cmd.Parameters.AddWithValue("estado", estado);
+                    cmd.Parameters.AddWithValue("dominio", dominio);
+                    cmd.Parameters.AddWithValue("direccion", txtDireccionPrincipal.Text);
+                    cmd.Parameters.AddWithValue("habitantes", habitantes);
+                    cmd.Parameters.AddWithValue("propietarioAnterior", txtPropietarioAnterior.Text);
 
-                    // Asignar parámetros al procedimiento
-                    cmd.Parameters.AddWithValue("@preId", preId);
-                    cmd.Parameters.AddWithValue("@codigo", txtCodigoCatastral.Text);
-                    cmd.Parameters.AddWithValue("@codigoAnterior", txtCodigoAnterior.Text);
-                    cmd.Parameters.AddWithValue("@numero", txtNumero.Text);
-                    cmd.Parameters.AddWithValue("@nombre", txtNombrePredio.Text);
-                    cmd.Parameters.AddWithValue("@areaTerreno", areaTerreno);
-                    cmd.Parameters.AddWithValue("@areaConstruccion", areaConstruccion);
-                    cmd.Parameters.AddWithValue("@fondoRelativo", fondoRelativo);
-                    cmd.Parameters.AddWithValue("@frenteFondo", frenteFondo);
-                    cmd.Parameters.AddWithValue("@observaciones", txtObservaciones.Text);
-                    cmd.Parameters.AddWithValue("@dimPlanos", txtDimTomadoPlanos.Text);
-                    cmd.Parameters.AddWithValue("@otraFuente", txtOtraFuenteInfo.Text);
-                    cmd.Parameters.AddWithValue("@nuevoBloque", txtNumNuevoBloque.Text);
-                    cmd.Parameters.AddWithValue("@ampliBloque", ampliBloque);
-                    cmd.Parameters.AddWithValue("@tipo", tipo);
-                    cmd.Parameters.AddWithValue("@estado", estado);
-                    cmd.Parameters.AddWithValue("@dominio", dominio);
-                    cmd.Parameters.AddWithValue("@direccion", txtDireccionPrincipal.Text);
-                    cmd.Parameters.AddWithValue("@habitantes", habitantes);
-                    cmd.Parameters.AddWithValue("@propietarioAnterior", txtPropietarioAnterior.Text);
-
-                    // Ejecutar el procedimiento
                     cmd.ExecuteNonQuery();
                 }
             }
 
-
-            // Redirigir a la página de listado después de guardar los cambios
             Response.Redirect("Predios.aspx");
         }
     }
