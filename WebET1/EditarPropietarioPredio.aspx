@@ -1,3 +1,4 @@
+
 ﻿<%@ Page Title="Editar Propietario - Predio" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditarPropietarioPredio.aspx.cs" Inherits="WebET1.EditarPropietarioPredio" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
@@ -42,4 +43,5 @@
 
     <asp:Button ID="btnGuardar" runat="server" Text="Guardar Cambios" CssClass="btn btn-success mt-3" OnClick="btnGuardar_Click" />
     <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary mt-3 ml-2" OnClick="btnCancelar_Click" />
+
 </asp:Content>

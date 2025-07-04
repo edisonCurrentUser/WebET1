@@ -7,8 +7,6 @@ namespace WebET1
 {
     public partial class EditarPropietarioPredio : System.Web.UI.Page
     {
-        int prp_id;
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -60,7 +58,6 @@ namespace WebET1
             try
             {
                 int prp_id = Convert.ToInt32(Request.QueryString["prp_id"]);
-
                 string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
 
                 using (NpgsqlConnection con = new NpgsqlConnection(conexion))
@@ -75,7 +72,7 @@ namespace WebET1
                         cmd.Parameters.AddWithValue("p_prp_observacion", txtObservacion.Text);
                         cmd.Parameters.AddWithValue("p_prp_tiene_escritura", short.Parse(txtTieneEscritura.Text));
 
-                        // Validación para fechas nulas
+                        // Manejar fechas nulas
                         cmd.Parameters.AddWithValue("p_prp_fecha_inscripcion",
                             string.IsNullOrWhiteSpace(txtFechaInscripcion.Text) ? (object)DBNull.Value : DateTime.Parse(txtFechaInscripcion.Text));
 
@@ -90,7 +87,7 @@ namespace WebET1
                     }
                 }
 
-                // Redirección correcta
+                // Redirección garantizada
                 Response.Redirect("PropietariosPredios.aspx", false);
                 Context.ApplicationInstance.CompleteRequest();
             }
@@ -99,7 +96,6 @@ namespace WebET1
                 Response.Write($"<script>alert('Error al actualizar: {ex.Message}');</script>");
             }
         }
-
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
