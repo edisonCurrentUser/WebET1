@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Configuration;
+using System.Data;
+using Npgsql;
 
 namespace WebET1
 {
@@ -11,7 +9,32 @@ namespace WebET1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                CargarPropietarios();
+            }
+        }
 
+        private void CargarPropietarios()
+        {
+            string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
+
+            using (NpgsqlConnection con = new NpgsqlConnection(conexion))
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("gestion.sp_listar_propietarios", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    using (NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                            da.Fill(dt);
+
+                        GridViewPropietarios.DataSource = dt;
+                        GridViewPropietarios.DataBind();
+                    }
+                }
+            }
         }
     }
 }

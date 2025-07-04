@@ -150,6 +150,7 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="AgregarPredio.aspx" />
+    <Content Include="AgregarPropietarioPredio.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -158,6 +159,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="EditarPredio.aspx" />
+    <Content Include="EditarPropietarioPredio.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -171,6 +173,8 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Predios.aspx" />
+    <Content Include="Propietarios.aspx" />
+    <Content Include="PropietariosPredios.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -213,6 +217,13 @@
     <Compile Include="AgregarPredio.aspx.designer.cs">
       <DependentUpon>AgregarPredio.aspx</DependentUpon>
     </Compile>
+    <Compile Include="AgregarPropietarioPredio.aspx.cs">
+      <DependentUpon>AgregarPropietarioPredio.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AgregarPropietarioPredio.aspx.designer.cs">
+      <DependentUpon>AgregarPropietarioPredio.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>
@@ -243,6 +254,13 @@
     <Compile Include="EditarPredio.aspx.designer.cs">
       <DependentUpon>EditarPredio.aspx</DependentUpon>
     </Compile>
+    <Compile Include="EditarPropietarioPredio.aspx.cs">
+      <DependentUpon>EditarPropietarioPredio.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EditarPropietarioPredio.aspx.designer.cs">
+      <DependentUpon>EditarPropietarioPredio.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -254,6 +272,20 @@
       <DependentUpon>Predios.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Propietarios.aspx.cs">
+      <DependentUpon>Propietarios.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Propietarios.aspx.designer.cs">
+      <DependentUpon>Propietarios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PropietariosPredios.aspx.cs">
+      <DependentUpon>PropietariosPredios.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PropietariosPredios.aspx.designer.cs">
+      <DependentUpon>PropietariosPredios.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
