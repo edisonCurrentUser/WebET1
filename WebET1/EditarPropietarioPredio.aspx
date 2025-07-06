@@ -1,5 +1,4 @@
-
-﻿<%@ Page Title="Editar Propietario - Predio" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditarPropietarioPredio.aspx.cs" Inherits="WebET1.EditarPropietarioPredio" %>
+<%@ Page Title="Editar Propietario - Predio" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EditarPropietarioPredio.aspx.cs" Inherits="WebET1.EditarPropietarioPredio" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <h2>Editar Propietario - Predio</h2>

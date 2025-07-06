@@ -150,6 +150,7 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="AgregarPredio.aspx" />
+    <Content Include="AgregarPropietario.aspx" />
     <Content Include="AgregarPropietarioPredio.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
@@ -159,6 +160,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="EditarPredio.aspx" />
+    <Content Include="EditarPropietario.aspx" />
     <Content Include="EditarPropietarioPredio.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -217,6 +219,13 @@
     <Compile Include="AgregarPredio.aspx.designer.cs">
       <DependentUpon>AgregarPredio.aspx</DependentUpon>
     </Compile>
+    <Compile Include="AgregarPropietario.aspx.cs">
+      <DependentUpon>AgregarPropietario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AgregarPropietario.aspx.designer.cs">
+      <DependentUpon>AgregarPropietario.aspx</DependentUpon>
+    </Compile>
     <Compile Include="AgregarPropietarioPredio.aspx.cs">
       <DependentUpon>AgregarPropietarioPredio.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -253,6 +262,13 @@
     </Compile>
     <Compile Include="EditarPredio.aspx.designer.cs">
       <DependentUpon>EditarPredio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EditarPropietario.aspx.cs">
+      <DependentUpon>EditarPropietario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EditarPropietario.aspx.designer.cs">
+      <DependentUpon>EditarPropietario.aspx</DependentUpon>
     </Compile>
     <Compile Include="EditarPropietarioPredio.aspx.cs">
       <DependentUpon>EditarPropietarioPredio.aspx</DependentUpon>

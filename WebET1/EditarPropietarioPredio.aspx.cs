@@ -72,7 +72,6 @@ namespace WebET1
                         cmd.Parameters.AddWithValue("p_prp_observacion", txtObservacion.Text);
                         cmd.Parameters.AddWithValue("p_prp_tiene_escritura", short.Parse(txtTieneEscritura.Text));
 
-                        // Manejar fechas nulas
                         cmd.Parameters.AddWithValue("p_prp_fecha_inscripcion",
                             string.IsNullOrWhiteSpace(txtFechaInscripcion.Text) ? (object)DBNull.Value : DateTime.Parse(txtFechaInscripcion.Text));
 
@@ -87,7 +86,6 @@ namespace WebET1
                     }
                 }
 
-                // Redirección garantizada
                 Response.Redirect("PropietariosPredios.aspx", false);
                 Context.ApplicationInstance.CompleteRequest();
             }

@@ -5,8 +5,15 @@
 
     <asp:Button ID="btnAgregar" runat="server" Text="Agregar Nuevo" CssClass="btn btn-primary mb-3" OnClick="btnAgregar_Click" />
 
-    <asp:GridView ID="GridViewPropietariosPredios" runat="server" AutoGenerateColumns="False" CssClass="table table-bordered table-striped"
-        OnRowCommand="GridViewPropietariosPredios_RowCommand" DataKeyNames="prp_id">
+    <asp:GridView ID="GridViewPropietariosPredios" runat="server"
+        AutoGenerateColumns="False"
+        AllowPaging="True"
+        PageSize="10"
+        CssClass="table table-bordered table-striped"
+        OnPageIndexChanging="GridViewPropietariosPredios_PageIndexChanging"
+        OnRowCommand="GridViewPropietariosPredios_RowCommand"
+        DataKeyNames="prp_id"> 
+
         <Columns>
             <asp:BoundField DataField="prp_id" HeaderText="ID" />
             <asp:BoundField DataField="pro_id" HeaderText="Propietario ID" />

@@ -41,7 +41,6 @@ namespace WebET1
             }
             catch (Exception ex)
             {
-                // Muestra el error en pantalla para depuración
                 Response.Write($"<script>alert('Error al cargar los datos: {ex.Message}');</script>");
             }
 
@@ -93,10 +92,14 @@ namespace WebET1
 
         protected void btnAgregar_Click(object sender, EventArgs e)
         {
-            // Redirigir al formulario de agregar
             Response.Redirect("AgregarPropietarioPredio.aspx");
         }
 
+        protected void GridViewPropietariosPredios_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GridViewPropietariosPredios.PageIndex = e.NewPageIndex;
+            CargarPropietariosPredios(); // Volvemos a cargar los datos
+        }
 
     }
 }
