@@ -79,5 +79,12 @@ namespace WebET1
             // Redirigir a la página AgregarPredio.aspx
             Response.Redirect("AgregarPredio.aspx");
         }
+
+        protected void GridViewPredios_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            GridViewPredios.PageIndex = e.NewPageIndex;
+            CargarPredios(); // Tu método para volver a cargar los datos
+        }
+
     }
 }

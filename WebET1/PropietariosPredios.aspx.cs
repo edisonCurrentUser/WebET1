@@ -98,7 +98,7 @@ namespace WebET1
         protected void GridViewPropietariosPredios_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GridViewPropietariosPredios.PageIndex = e.NewPageIndex;
-            CargarPropietariosPredios(); // Volvemos a cargar los datos
+            CargarPropietariosPredios(); 
         }
 
     }

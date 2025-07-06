@@ -12,7 +12,14 @@
         CssClass="table table-bordered table-striped"
         OnPageIndexChanging="GridViewPropietariosPredios_PageIndexChanging"
         OnRowCommand="GridViewPropietariosPredios_RowCommand"
-        DataKeyNames="prp_id"> 
+        DataKeyNames="prp_id">
+
+        <PagerSettings Mode="NumericFirstLast"
+                       FirstPageText="« Primero"
+                       LastPageText="Último »"
+                       NextPageText="Siguiente ›"
+                       PreviousPageText="‹ Anterior" />
+        <PagerStyle CssClass="pagination-container" />
 
         <Columns>
             <asp:BoundField DataField="prp_id" HeaderText="ID" />

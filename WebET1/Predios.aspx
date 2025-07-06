@@ -7,8 +7,21 @@
 
         <asp:Button ID="btnAgregarPredio" runat="server" Text="Agregar Predio" CssClass="btn btn-success mb-3" OnClick="btnAgregarPredio_Click" />
 
-        <asp:GridView ID="GridViewPredios" runat="server" CssClass="table table-bordered table-striped display" AutoGenerateColumns="False"
-                      OnRowEditing="GridViewPredios_RowEditing" OnRowDeleting="GridViewPredios_RowDeleting" DataKeyNames="pre_id">
+        <asp:GridView ID="GridViewPredios" runat="server" CssClass="table table-bordered table-striped display"
+                      AutoGenerateColumns="False"
+                      AllowPaging="True" PageSize="10"
+                      OnPageIndexChanging="GridViewPredios_PageIndexChanging"
+                      OnRowEditing="GridViewPredios_RowEditing"
+                      OnRowDeleting="GridViewPredios_RowDeleting"
+                      DataKeyNames="pre_id">
+
+            <PagerSettings Mode="NumericFirstLast"
+                           FirstPageText="« Primero"
+                           LastPageText="Último »"
+                           NextPageText="Siguiente ›"
+                           PreviousPageText="‹ Anterior" />
+            <PagerStyle CssClass="pagination-container" />
+
             <Columns>
                 <asp:BoundField DataField="pre_id" HeaderText="ID" SortExpression="pre_id" />
                 <asp:BoundField DataField="pre_codigo_catastral" HeaderText="Código Catastral" SortExpression="pre_codigo_catastral" />
