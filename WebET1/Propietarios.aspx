@@ -7,7 +7,7 @@
 
     <asp:GridView ID="GridViewPropietarios" runat="server" AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
         CssClass="table table-bordered table-striped" DataKeyNames="pro_id"
-        OnPageIndexCha  nging="GridViewPropietarios_PageIndexChanging"
+        OnPageIndexChanging="GridViewPropietarios_PageIndexChanging"
         OnRowCommand="GridViewPropietarios_RowCommand">
         <Columns>
             <asp:BoundField DataField="pro_id" HeaderText="ID" />
