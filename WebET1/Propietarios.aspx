@@ -9,6 +9,13 @@
         CssClass="table table-bordered table-striped" DataKeyNames="pro_id"
         OnPageIndexChanging="GridViewPropietarios_PageIndexChanging"
         OnRowCommand="GridViewPropietarios_RowCommand">
+        <PagerSettings Mode="NumericFirstLast" 
+                       FirstPageText="« Primero"
+                       LastPageText="Último »"
+                       NextPageText="Siguiente ›"
+                       PreviousPageText="‹ Anterior" />
+        <PagerStyle CssClass="pagination-container" />
+
         <Columns>
             <asp:BoundField DataField="pro_id" HeaderText="ID" />
             <asp:BoundField DataField="pro_num_identificacion" HeaderText="Identificación" />
