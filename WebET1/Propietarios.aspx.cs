@@ -88,5 +88,10 @@ namespace WebET1
                 Response.Write($"<script>alert('Error al eliminar: {ex.Message}');</script>");
             }
         }
+
+        protected void GridViewPropietarios_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

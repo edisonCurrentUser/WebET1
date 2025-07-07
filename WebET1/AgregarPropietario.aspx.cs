@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using Npgsql;
+using System.Web.UI;
 
 namespace WebET1
 {
@@ -82,11 +83,33 @@ namespace WebET1
                     }
                 }
 
-                Response.Redirect("Propietarios.aspx");
+                // Alerta de éxito con redirección al confirmar
+                string successScript = @"
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: 'Propietario agregado correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'Ver lista'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location = 'Propietarios.aspx';
+                        }
+                    });
+                ";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "swalSuccess", successScript, true);
             }
             catch (Exception ex)
             {
-                Response.Write($"<script>alert('Error al guardar: {ex.Message}');</script>");
+                // Alerta de error
+                string errorScript = $@"
+                    Swal.fire({{
+                        title: 'Error al guardar',
+                        text: '{ex.Message.Replace("'", "\\'")}',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    }});
+                ";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "swalError", errorScript, true);
             }
         }
 

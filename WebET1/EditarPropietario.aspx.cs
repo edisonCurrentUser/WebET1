@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using Npgsql;
+using System.Web.UI;
 
 namespace WebET1
 {
@@ -69,31 +70,29 @@ namespace WebET1
             string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
 
             using (NpgsqlConnection con = new NpgsqlConnection(conexion))
+            using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM gestion.ges_propietario WHERE pro_id = @id", con))
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM gestion.ges_propietario WHERE pro_id = @id", con))
-                {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    con.Open();
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
 
-                    using (NpgsqlDataReader dr = cmd.ExecuteReader())
+                using (NpgsqlDataReader dr = cmd.ExecuteReader())
+                {
+                    if (dr.Read())
                     {
-                        if (dr.Read())
-                        {
-                            ddlTipoIdentificacion.SelectedValue = dr["opc_tipoidentificacion"].ToString();
-                            txtNumIdentificacion.Text = dr["pro_num_identificacion"].ToString();
-                            txtNombre.Text = dr["pro_nombre"].ToString();
-                            txtApellido.Text = dr["pro_apellido"].ToString();
-                            txtCiudad.Text = dr["pro_direccion_ciudad"].ToString();
-                            txtCorreo.Text = dr["pro_correo_electronico"].ToString();
-                            txtTelefono.Text = dr["pro_telefono1"].ToString();
-                            ddlEstadoCivil.SelectedValue = dr["opc_estado_civil"].ToString();
-                            ddlTipoConadis.SelectedValue = dr["opc_tipo_conadis"].ToString();
-                            ddlTipoEntidad.SelectedValue = dr["opc_tipo_entidad"].ToString();
-                        }
-                        else
-                        {
-                            Response.Redirect("Propietarios.aspx");
-                        }
+                        ddlTipoIdentificacion.SelectedValue = dr["opc_tipoidentificacion"].ToString();
+                        txtNumIdentificacion.Text = dr["pro_num_identificacion"].ToString();
+                        txtNombre.Text = dr["pro_nombre"].ToString();
+                        txtApellido.Text = dr["pro_apellido"].ToString();
+                        txtCiudad.Text = dr["pro_direccion_ciudad"].ToString();
+                        txtCorreo.Text = dr["pro_correo_electronico"].ToString();
+                        txtTelefono.Text = dr["pro_telefono1"].ToString();
+                        ddlEstadoCivil.SelectedValue = dr["opc_estado_civil"].ToString();
+                        ddlTipoConadis.SelectedValue = dr["opc_tipo_conadis"].ToString();
+                        ddlTipoEntidad.SelectedValue = dr["opc_tipo_entidad"].ToString();
+                    }
+                    else
+                    {
+                        Response.Redirect("Propietarios.aspx");
                     }
                 }
             }
@@ -113,34 +112,55 @@ namespace WebET1
                 string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
 
                 using (NpgsqlConnection con = new NpgsqlConnection(conexion))
+                using (NpgsqlCommand cmd = new NpgsqlCommand("gestion.sp_actualizar_propietario", con))
                 {
-                    using (NpgsqlCommand cmd = new NpgsqlCommand("gestion.sp_actualizar_propietario", con))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                        cmd.Parameters.AddWithValue("p_pro_id", id);
-                        cmd.Parameters.AddWithValue("p_opc_tipoidentificacion", int.Parse(ddlTipoIdentificacion.SelectedValue));
-                        cmd.Parameters.AddWithValue("p_pro_num_identificacion", txtNumIdentificacion.Text);
-                        cmd.Parameters.AddWithValue("p_pro_nombre", txtNombre.Text);
-                        cmd.Parameters.AddWithValue("p_pro_apellido", txtApellido.Text);
-                        cmd.Parameters.AddWithValue("p_pro_direccion_ciudad", txtCiudad.Text);
-                        cmd.Parameters.AddWithValue("p_pro_correo_electronico", txtCorreo.Text);
-                        cmd.Parameters.AddWithValue("p_pro_telefono1", txtTelefono.Text);
-                        cmd.Parameters.AddWithValue("p_opc_estado_civil", int.Parse(ddlEstadoCivil.SelectedValue));
-                        cmd.Parameters.AddWithValue("p_opc_tipo_conadis", int.Parse(ddlTipoConadis.SelectedValue));
-                        cmd.Parameters.AddWithValue("p_opc_tipo_entidad", int.Parse(ddlTipoEntidad.SelectedValue));
+                    cmd.Parameters.AddWithValue("p_pro_id", id);
+                    cmd.Parameters.AddWithValue("p_opc_tipoidentificacion", int.Parse(ddlTipoIdentificacion.SelectedValue));
+                    cmd.Parameters.AddWithValue("p_pro_num_identificacion", txtNumIdentificacion.Text);
+                    cmd.Parameters.AddWithValue("p_pro_nombre", txtNombre.Text);
+                    cmd.Parameters.AddWithValue("p_pro_apellido", txtApellido.Text);
+                    cmd.Parameters.AddWithValue("p_pro_direccion_ciudad", txtCiudad.Text);
+                    cmd.Parameters.AddWithValue("p_pro_correo_electronico", txtCorreo.Text);
+                    cmd.Parameters.AddWithValue("p_pro_telefono1", txtTelefono.Text);
+                    cmd.Parameters.AddWithValue("p_opc_estado_civil", int.Parse(ddlEstadoCivil.SelectedValue));
+                    cmd.Parameters.AddWithValue("p_opc_tipo_conadis", int.Parse(ddlTipoConadis.SelectedValue));
+                    cmd.Parameters.AddWithValue("p_opc_tipo_entidad", int.Parse(ddlTipoEntidad.SelectedValue));
 
-                        con.Open();
-                        cmd.ExecuteNonQuery();
-                        con.Close();
-                    }
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
                 }
 
-                Response.Redirect("Propietarios.aspx");
+                // Alerta de éxito y redirección
+                string successScript = @"
+                    Swal.fire({
+                        title: '¡Actualizado!',
+                        text: 'Propietario modificado correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'Volver'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location = 'Propietarios.aspx';
+                        }
+                    });
+                ";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "swalUpdateSuccess", successScript, true);
             }
             catch (Exception ex)
             {
-                Response.Write($"<script>alert('Error al actualizar: {ex.Message}');</script>");
+                // Alerta de error
+                string errMsg = ex.Message.Replace("'", "\\'");
+                string errorScript = $@"
+                    Swal.fire({{
+                        title: 'Error al actualizar',
+                        text: '{errMsg}',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    }});
+                ";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "swalUpdateError", errorScript, true);
             }
         }
 
