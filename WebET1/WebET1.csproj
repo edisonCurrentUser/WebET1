@@ -178,6 +178,7 @@
     <Content Include="Predios.aspx" />
     <Content Include="Propietarios.aspx" />
     <Content Include="PropietariosPredios.aspx" />
+    <Content Include="PropietariosTop.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -302,6 +303,13 @@
     </Compile>
     <Compile Include="PropietariosPredios.aspx.designer.cs">
       <DependentUpon>PropietariosPredios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PropietariosTop.aspx.cs">
+      <DependentUpon>PropietariosTop.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PropietariosTop.aspx.designer.cs">
+      <DependentUpon>PropietariosTop.aspx</DependentUpon>
     </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
