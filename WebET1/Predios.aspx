@@ -11,8 +11,7 @@
                       AutoGenerateColumns="False"
                       AllowPaging="True" PageSize="10"
                       OnPageIndexChanging="GridViewPredios_PageIndexChanging"
-                      OnRowEditing="GridViewPredios_RowEditing"
-                      OnRowDeleting="GridViewPredios_RowDeleting"
+                      OnRowCommand="GridViewPredios_RowCommand"
                       DataKeyNames="pre_id">
 
             <PagerSettings Mode="NumericFirstLast"
@@ -23,16 +22,25 @@
             <PagerStyle CssClass="pagination-container" />
 
             <Columns>
-                <asp:BoundField DataField="pre_id" HeaderText="ID" SortExpression="pre_id" />
-                <asp:BoundField DataField="pre_codigo_catastral" HeaderText="Código Catastral" SortExpression="pre_codigo_catastral" />
-                <asp:BoundField DataField="pre_nombre_predio" HeaderText="Nombre del Predio" SortExpression="pre_nombre_predio" />
-                <asp:BoundField DataField="pre_direccion_principal" HeaderText="Dirección" SortExpression="pre_direccion_principal" />
-                <asp:BoundField DataField="pre_area_total_ter" HeaderText="Área Terreno" SortExpression="pre_area_total_ter" />
-                <asp:BoundField DataField="pre_area_total_const" HeaderText="Área Construcción" SortExpression="pre_area_total_const" />
-                <asp:BoundField DataField="pre_num_habitantes" HeaderText="Habitantes" SortExpression="pre_num_habitantes" />
-                <asp:BoundField DataField="pre_estado" HeaderText="Estado" SortExpression="pre_estado" />
+                <asp:BoundField DataField="pre_id" HeaderText="ID" />
+                <asp:BoundField DataField="pre_codigo_catastral" HeaderText="Código Catastral" />
+                <asp:BoundField DataField="pre_nombre_predio" HeaderText="Nombre del Predio" />
+                <asp:BoundField DataField="pre_direccion_principal" HeaderText="Dirección" />
+                <asp:BoundField DataField="pre_area_total_ter" HeaderText="Área Terreno" />
+                <asp:BoundField DataField="pre_area_total_const" HeaderText="Área Construcción" />
+                <asp:BoundField DataField="pre_num_habitantes" HeaderText="Habitantes" />
+                <asp:BoundField DataField="pre_estado" HeaderText="Estado" />
 
-                <asp:CommandField ShowEditButton="True" ShowDeleteButton="True" />
+                <asp:TemplateField HeaderText="Acciones">
+                    <ItemTemplate>
+                        <asp:Button ID="btnEditar" runat="server" CommandName="Editar" Text="Editar"
+                            CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CssClass="btn btn-warning btn-sm" />
+
+                        <asp:Button ID="btnEliminar" runat="server" CommandName="Eliminar" Text="Eliminar"
+                            CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CssClass="btn btn-danger btn-sm ml-2"
+                            OnClientClick="return confirm('¿Está seguro de eliminar este registro?');" />
+                    </ItemTemplate>
+                </asp:TemplateField>
             </Columns>
         </asp:GridView>
     </div>

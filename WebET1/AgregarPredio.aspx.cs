@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Web.UI;
-using Npgsql;
 using System.Configuration;
+using System.Data;
+using Npgsql;
 
 namespace WebET1
 {
@@ -9,37 +9,79 @@ namespace WebET1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Si es necesario, puedes cargar algo en la página
+            if (!IsPostBack)
+            {
+                CargarManzanas();
+            }
         }
 
-        // Método para guardar el predio en la base de datos
+        private void CargarManzanas()
+        {
+            string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
+
+            using (NpgsqlConnection con = new NpgsqlConnection(conexion))
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT man_id FROM catastro.cat_manzana ORDER BY man_id", con))
+                {
+                    con.Open();
+                    using (NpgsqlDataReader dr = cmd.ExecuteReader())
+                    {
+                        DataTable dt = new DataTable();
+                        dt.Load(dr);
+
+                        ddlManzana.DataSource = dt;
+                        ddlManzana.DataTextField = "man_id";
+                        ddlManzana.DataValueField = "man_id";
+                        ddlManzana.DataBind();
+                        ddlManzana.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Seleccione --", ""));
+                    }
+                    con.Close();
+                }
+            }
+        }
+
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            string connStr = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
 
-            using (NpgsqlConnection conn = new NpgsqlConnection(connStr))
+            try
             {
-                conn.Open();
+                string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
 
-                using (NpgsqlCommand cmd = new NpgsqlCommand("CALL catastro.sp_insertar_predio_medio(@pre_codigo_catastral, @pre_fecha_ingreso, @pre_codigo_anterior, @pre_numero, @pre_nombre_predio, @pre_area_total_ter, @pre_area_total_const, @pre_fondo_relativo, @pre_frente_fondo, @pre_observaciones)", conn))
+                using (NpgsqlConnection con = new NpgsqlConnection(conexion))
                 {
-                    cmd.Parameters.AddWithValue("pre_codigo_catastral", txtCodigoCatastral.Text);
-                    cmd.Parameters.AddWithValue("pre_fecha_ingreso", DateTime.Now);
-                    cmd.Parameters.AddWithValue("pre_codigo_anterior", txtCodigoAnterior.Text);
-                    cmd.Parameters.AddWithValue("pre_numero", txtNumero.Text);
-                    cmd.Parameters.AddWithValue("pre_nombre_predio", txtNombrePredio.Text);
-                    cmd.Parameters.AddWithValue("pre_area_total_ter", Convert.ToDecimal(txtAreaTerreno.Text));
-                    cmd.Parameters.AddWithValue("pre_area_total_const", Convert.ToDecimal(txtAreaConstruccion.Text));
-                    cmd.Parameters.AddWithValue("pre_fondo_relativo", Convert.ToDecimal(txtFondoRelativo.Text));
-                    cmd.Parameters.AddWithValue("pre_frente_fondo", Convert.ToDecimal(txtFrenteFondo.Text));
-                    cmd.Parameters.AddWithValue("pre_observaciones", txtObservaciones.Text);
+                    using (NpgsqlCommand cmd = new NpgsqlCommand("catastro.sp_insertar_predio", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("p_pre_codigo_catastral", txtCodigoCatastral.Text);
+                        cmd.Parameters.AddWithValue("p_pre_codigo_anterior", txtCodigoAnterior.Text);
+                        cmd.Parameters.AddWithValue("p_pre_numero", txtNumero.Text);
+                        cmd.Parameters.AddWithValue("p_pre_nombre_predio", txtNombrePredio.Text);
+                        cmd.Parameters.AddWithValue("p_pre_area_total_ter", decimal.Parse(txtAreaTerreno.Text));
+                        cmd.Parameters.AddWithValue("p_pre_area_total_const", string.IsNullOrEmpty(txtAreaConstruccion.Text) ? (object)DBNull.Value : decimal.Parse(txtAreaConstruccion.Text));
+                        cmd.Parameters.AddWithValue("p_pre_estado", string.IsNullOrEmpty(txtEstado.Text) ? (object)DBNull.Value : int.Parse(txtEstado.Text));
+                        cmd.Parameters.AddWithValue("p_pre_dominio", string.IsNullOrEmpty(txtDominio.Text) ? (object)DBNull.Value : int.Parse(txtDominio.Text));
+                        cmd.Parameters.AddWithValue("p_pre_direccion_principal", txtDireccionPrincipal.Text);
+                        cmd.Parameters.AddWithValue("p_pre_num_habitantes", string.IsNullOrEmpty(txtNumHabitantes.Text) ? (object)DBNull.Value : int.Parse(txtNumHabitantes.Text));
+                        cmd.Parameters.AddWithValue("p_pre_propietario_anterior", txtPropietarioAnterior.Text);
+                        cmd.Parameters.AddWithValue("p_man_id", int.Parse(ddlManzana.SelectedValue));
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
                 }
 
+                Response.Redirect("Predios.aspx");
             }
+            catch (Exception ex)
+            {
+                Response.Write($"<script>alert('Error al guardar: {ex.Message}');</script>");
+            }
+        }
 
-            // Después de guardar, redirige a la página de listado o muestra un mensaje de éxito
+        protected void btnCancelar_Click(object sender, EventArgs e)
+        {
             Response.Redirect("Predios.aspx");
         }
     }

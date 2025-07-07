@@ -1,30 +1,81 @@
 ﻿<%@ Page Title="Agregar Predio" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AgregarPredio.aspx.cs" Inherits="WebET1.AgregarPredio" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+
     <div class="card shadow p-4 mb-4">
         <h3 class="mb-4 text-center">Agregar Predio</h3>
 
-        <asp:TextBox ID="txtCodigoCatastral" runat="server" CssClass="form-control mb-3" placeholder="Código Catastral" />
-        <asp:TextBox ID="txtCodigoAnterior" runat="server" CssClass="form-control mb-3" placeholder="Código Anterior" />
-        <asp:TextBox ID="txtNumero" runat="server" CssClass="form-control mb-3" placeholder="Número" />
-        <asp:TextBox ID="txtNombrePredio" runat="server" CssClass="form-control mb-3" placeholder="Nombre del Predio" />
-        <asp:TextBox ID="txtAreaTerreno" runat="server" CssClass="form-control mb-3" placeholder="Área del Terreno" />
-        <asp:TextBox ID="txtAreaConstruccion" runat="server" CssClass="form-control mb-3" placeholder="Área de Construcción" />
-        <asp:TextBox ID="txtFondoRelativo" runat="server" CssClass="form-control mb-3" placeholder="Fondo Relativo" />
-        <asp:TextBox ID="txtFrenteFondo" runat="server" CssClass="form-control mb-3" placeholder="Frente Fondo" />
-        <asp:TextBox ID="txtObservaciones" runat="server" CssClass="form-control mb-3" placeholder="Observaciones" />
-        <asp:TextBox ID="txtDimTomadoPlanos" runat="server" CssClass="form-control mb-3" placeholder="Dimensiones Tomadas de Planos" />
-        <asp:TextBox ID="txtOtraFuenteInfo" runat="server" CssClass="form-control mb-3" placeholder="Otra Fuente de Información" />
-        <asp:TextBox ID="txtNumNuevoBloque" runat="server" CssClass="form-control mb-3" placeholder="Número Nuevo Bloque" />
-        <asp:TextBox ID="txtNumAmpliBloque" runat="server" CssClass="form-control mb-3" placeholder="Número Ampliación Bloque" />
-        <asp:TextBox ID="txtTipo" runat="server" CssClass="form-control mb-3" placeholder="Tipo" />
-        <asp:TextBox ID="txtEstado" runat="server" CssClass="form-control mb-3" placeholder="Estado" />
-        <asp:TextBox ID="txtDominio" runat="server" CssClass="form-control mb-3" placeholder="Dominio" />
-        <asp:TextBox ID="txtDireccionPrincipal" runat="server" CssClass="form-control mb-3" placeholder="Dirección Principal" />
-        <asp:TextBox ID="txtNumHabitantes" runat="server" CssClass="form-control mb-3" placeholder="Número de Habitantes" />
-        <asp:TextBox ID="txtPropietarioAnterior" runat="server" CssClass="form-control mb-3" placeholder="Propietario Anterior" />
+        <asp:ValidationSummary ID="ValidationSummary1" runat="server" CssClass="text-danger" />
 
-        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary" OnClick="btnGuardar_Click" />
+        <div class="form-group">
+            <label>Código Catastral:</label>
+            <asp:TextBox ID="txtCodigoCatastral" runat="server" CssClass="form-control" />
+            <asp:RequiredFieldValidator ID="rfvCodigoCatastral" runat="server" ControlToValidate="txtCodigoCatastral" ErrorMessage="Ingrese el código catastral." CssClass="text-danger" />
+        </div>
 
+        <div class="form-group">
+            <label>Código Anterior:</label>
+            <asp:TextBox ID="txtCodigoAnterior" runat="server" CssClass="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Número:</label>
+            <asp:TextBox ID="txtNumero" runat="server" CssClass="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Nombre del Predio:</label>
+            <asp:TextBox ID="txtNombrePredio" runat="server" CssClass="form-control" />
+            <asp:RequiredFieldValidator ID="rfvNombrePredio" runat="server" ControlToValidate="txtNombrePredio" ErrorMessage="Ingrese el nombre del predio." CssClass="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label>Área del Terreno (m²):</label>
+            <asp:TextBox ID="txtAreaTerreno" runat="server" CssClass="form-control" />
+            <asp:RequiredFieldValidator ID="rfvAreaTerreno" runat="server" ControlToValidate="txtAreaTerreno" ErrorMessage="Ingrese el área del terreno." CssClass="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label>Área de Construcción (m²):</label>
+            <asp:TextBox ID="txtAreaConstruccion" runat="server" CssClass="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Estado:</label>
+            <asp:TextBox ID="txtEstado" runat="server" CssClass="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Dominio:</label>
+            <asp:TextBox ID="txtDominio" runat="server" CssClass="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Dirección Principal:</label>
+            <asp:TextBox ID="txtDireccionPrincipal" runat="server" CssClass="form-control" />
+            <asp:RequiredFieldValidator ID="rfvDireccionPrincipal" runat="server" ControlToValidate="txtDireccionPrincipal" ErrorMessage="Ingrese la dirección principal." CssClass="text-danger" />
+        </div>
+
+        <div class="form-group">
+            <label>Número de Habitantes:</label>
+            <asp:TextBox ID="txtNumHabitantes" runat="server" CssClass="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Propietario Anterior:</label>
+            <asp:TextBox ID="txtPropietarioAnterior" runat="server" CssClass="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label>Manzana:</label>
+            <asp:DropDownList ID="ddlManzana" runat="server" CssClass="form-control" AppendDataBoundItems="true">
+                <asp:ListItem Text="-- Seleccione --" Value="" />
+            </asp:DropDownList>
+            <asp:RequiredFieldValidator ID="rfvManzana" runat="server" ControlToValidate="ddlManzana" InitialValue="" ErrorMessage="Seleccione una manzana." CssClass="text-danger" />
+        </div>
+        <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-primary mt-3" OnClick="btnGuardar_Click" CausesValidation="false" />
+
+        <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="btn btn-secondary mt-3 ml-2" OnClick="btnCancelar_Click" />
     </div>
+
 </asp:Content>

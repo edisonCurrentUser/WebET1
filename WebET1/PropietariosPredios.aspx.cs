@@ -48,22 +48,18 @@ namespace WebET1
 
         protected void GridViewPropietariosPredios_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName == "Editar" || e.CommandName == "Eliminar")
+            if (e.CommandName == "Editar")
             {
-                int index = Convert.ToInt32(e.CommandArgument);
-                int prp_id = Convert.ToInt32(GridViewPropietariosPredios.DataKeys[index].Value);
-
-                if (e.CommandName == "Editar")
-                {
-                    Response.Redirect($"EditarPropietarioPredio.aspx?prp_id={prp_id}");
-                }
-                else if (e.CommandName == "Eliminar")
-                {
-                    EliminarPropietarioPredio(prp_id);
-                    CargarPropietariosPredios(); // Refresca el listado después de eliminar
-                }
+                int id = Convert.ToInt32(e.CommandArgument);
+                Response.Redirect("EditarPropietarioPredio.aspx?id=" + id);
+            }
+            else if (e.CommandName == "Eliminar")
+            {
+                int id = Convert.ToInt32(e.CommandArgument);
+                EliminarPropietarioPredio(id);
             }
         }
+
 
         private void EliminarPropietarioPredio(int prp_id)
         {
@@ -83,12 +79,15 @@ namespace WebET1
                         con.Close();
                     }
                 }
+
+                CargarPropietariosPredios();
             }
             catch (Exception ex)
             {
                 Response.Write($"<script>alert('Error al eliminar: {ex.Message}');</script>");
             }
         }
+
 
         protected void btnAgregar_Click(object sender, EventArgs e)
         {

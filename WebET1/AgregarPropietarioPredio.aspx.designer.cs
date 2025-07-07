@@ -33,6 +33,15 @@ namespace WebET1
         protected global::System.Web.UI.WebControls.DropDownList ddlPropietario;
 
         /// <summary>
+        /// Control rfvPropietario.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPropietario;
+
+        /// <summary>
         /// Control ddlPredio.
         /// </summary>
         /// <remarks>
@@ -42,6 +51,15 @@ namespace WebET1
         protected global::System.Web.UI.WebControls.DropDownList ddlPredio;
 
         /// <summary>
+        /// Control rfvPredio.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPredio;
+
+        /// <summary>
         /// Control txtAlicuota.
         /// </summary>
         /// <remarks>
@@ -49,6 +67,15 @@ namespace WebET1
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAlicuota;
+
+        /// <summary>
+        /// Control rfvAlicuota.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvAlicuota;
 
         /// <summary>
         /// Control txtAniosPosesion.
@@ -69,13 +96,22 @@ namespace WebET1
         protected global::System.Web.UI.WebControls.TextBox txtObservacion;
 
         /// <summary>
-        /// Control txtTieneEscritura.
+        /// Control ddlTieneEscritura.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTieneEscritura;
+        protected global::System.Web.UI.WebControls.DropDownList ddlTieneEscritura;
+
+        /// <summary>
+        /// Control rfvTieneEscritura.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvTieneEscritura;
 
         /// <summary>
         /// Control txtFechaInscripcion.

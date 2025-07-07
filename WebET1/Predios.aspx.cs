@@ -39,51 +39,59 @@ namespace WebET1
             }
         }
 
-        // Evento para redirigir a la página de edición
-        protected void GridViewPredios_RowEditing(object sender, GridViewEditEventArgs e)
+        protected void GridViewPredios_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
         {
-            // Obtener el ID del predio de la fila seleccionada
-            int preId = Convert.ToInt32(GridViewPredios.DataKeys[e.NewEditIndex].Value);
-
-            // Redirigir a la página EditarPredio.aspx con el ID del predio
-            Response.Redirect($"EditarPredio.aspx?pre_id={preId}");
-        }
-
-        // Evento para eliminar un predio
-        protected void GridViewPredios_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            // Obtener el ID del predio de la fila seleccionada
-            int preId = Convert.ToInt32(GridViewPredios.DataKeys[e.RowIndex].Value);
-
-            // Eliminar el predio de la base de datos
-            string connStr = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
-
-            using (NpgsqlConnection conn = new NpgsqlConnection(connStr))
+            if (e.CommandName == "Editar")
             {
-                conn.Open();
-                string query = "DELETE FROM catastro.cat_predio WHERE pre_id = @preId";
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@preId", preId);
-                    cmd.ExecuteNonQuery();
-                }
+                int index = Convert.ToInt32(e.CommandArgument);
+                int id = Convert.ToInt32(GridViewPredios.DataKeys[index].Value);
+                Response.Redirect($"EditarPredio.aspx?id={id}");
             }
-
-            // Recargar el GridView después de eliminar
-            CargarPredios();
+            else if (e.CommandName == "Eliminar")
+            {
+                int index = Convert.ToInt32(e.CommandArgument);
+                int id = Convert.ToInt32(GridViewPredios.DataKeys[index].Value);
+                EliminarPredio(id);
+            }
         }
 
-        // Evento para redirigir a la página AgregarPredio.aspx
+        private void EliminarPredio(int id)
+        {
+            try
+            {
+                string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
+
+                using (NpgsqlConnection con = new NpgsqlConnection(conexion))
+                {
+                    using (NpgsqlCommand cmd = new NpgsqlCommand("catastro.sp_eliminar_predio", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("p_pre_id", id);
+
+                        con.Open();
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+                }
+
+                CargarPredios();
+            }
+            catch (Exception ex)
+            {
+                Response.Write($"<script>alert('Error al eliminar: {ex.Message.Replace("'", "")}');</script>");
+            }
+        }
+
+
         protected void btnAgregarPredio_Click(object sender, EventArgs e)
         {
-            // Redirigir a la página AgregarPredio.aspx
             Response.Redirect("AgregarPredio.aspx");
         }
 
         protected void GridViewPredios_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GridViewPredios.PageIndex = e.NewPageIndex;
-            CargarPredios(); // Tu método para volver a cargar los datos
+            CargarPredios(); 
         }
 
     }

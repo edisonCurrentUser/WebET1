@@ -22,19 +22,23 @@ namespace WebET1
 
             using (NpgsqlConnection con = new NpgsqlConnection(conexion))
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("gestion.sp_listar_propietarios_combo", con))
+                using (NpgsqlCommand cmd = new NpgsqlCommand(@"SELECT pro_id, pro_nombre || ' ' || pro_apellido AS nombre_completo 
+                                                               FROM gestion.ges_propietario 
+                                                               ORDER BY pro_nombre", con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    using (NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd))
+                    con.Open();
+                    using (NpgsqlDataReader dr = cmd.ExecuteReader())
                     {
                         DataTable dt = new DataTable();
-                        da.Fill(dt);
+                        dt.Load(dr);
 
                         ddlPropietario.DataSource = dt;
                         ddlPropietario.DataTextField = "nombre_completo";
                         ddlPropietario.DataValueField = "pro_id";
                         ddlPropietario.DataBind();
+                        ddlPropietario.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Seleccione --", ""));
                     }
+                    con.Close();
                 }
             }
         }
@@ -45,54 +49,62 @@ namespace WebET1
 
             using (NpgsqlConnection con = new NpgsqlConnection(conexion))
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("catastro.sp_listar_predios_combo", con))
+                using (NpgsqlCommand cmd = new NpgsqlCommand(@"SELECT pre_id, pre_codigo_catastral 
+                                                               FROM catastro.cat_predio 
+                                                               ORDER BY pre_codigo_catastral", con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    using (NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd))
+                    con.Open();
+                    using (NpgsqlDataReader dr = cmd.ExecuteReader())
                     {
                         DataTable dt = new DataTable();
-                        da.Fill(dt);
+                        dt.Load(dr);
 
                         ddlPredio.DataSource = dt;
-                        ddlPredio.DataTextField = "descripcion_predio";
+                        ddlPredio.DataTextField = "pre_codigo_catastral";
                         ddlPredio.DataValueField = "pre_id";
                         ddlPredio.DataBind();
+                        ddlPredio.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Seleccione --", ""));
                     }
+                    con.Close();
                 }
             }
         }
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
+            if (ddlPropietario.SelectedIndex == 0 || ddlPredio.SelectedIndex == 0)
+            {
+                Response.Write("<script>alert('Debe seleccionar un Propietario y un Predio.');</script>");
+                return;
+            }
 
             try
             {
+                string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
+
                 using (NpgsqlConnection con = new NpgsqlConnection(conexion))
                 {
-                    using (NpgsqlCommand cmd = new NpgsqlCommand("catastro.sp_agregar_propietario_predio", con))
+                    using (NpgsqlCommand cmd = new NpgsqlCommand("catastro.sp_insertar_propietario_predio", con))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
 
-                        // Parámetros
-                        cmd.Parameters.AddWithValue("p_pro_id", Convert.ToInt32(ddlPropietario.SelectedValue));
-                        cmd.Parameters.AddWithValue("p_pre_id", Convert.ToInt64(ddlPredio.SelectedValue));
-                        cmd.Parameters.AddWithValue("p_prp_alicuota", Convert.ToDecimal(txtAlicuota.Text));
-                        cmd.Parameters.AddWithValue("p_prp_anios_posesion", Convert.ToInt32(txtAniosPosesion.Text));
-                        cmd.Parameters.AddWithValue("p_prp_observacion", txtObservacion.Text);
-                        cmd.Parameters.AddWithValue("p_prp_tiene_escritura", Convert.ToInt16(txtTieneEscritura.Text));
-                        cmd.Parameters.AddWithValue("p_prp_fecha_inscripcion", DateTime.Parse(txtFechaInscripcion.Text));
-                        cmd.Parameters.AddWithValue("p_prp_fecha_registro", DateTime.Parse(txtFechaRegistro.Text));
-                        cmd.Parameters.AddWithValue("p_prp_area_escritura", Convert.ToDecimal(txtAreaEscritura.Text));
+                        cmd.Parameters.Add(new NpgsqlParameter("p_pro_id", NpgsqlTypes.NpgsqlDbType.Integer) { Value = int.Parse(ddlPropietario.SelectedValue) });
+                        cmd.Parameters.Add(new NpgsqlParameter("p_pre_id", NpgsqlTypes.NpgsqlDbType.Bigint) { Value = long.Parse(ddlPredio.SelectedValue) });
+                        cmd.Parameters.Add(new NpgsqlParameter("p_prp_alicuota", NpgsqlTypes.NpgsqlDbType.Numeric) { Value = decimal.Parse(txtAlicuota.Text) });
+                        cmd.Parameters.Add(new NpgsqlParameter("p_prp_anios_posesion", NpgsqlTypes.NpgsqlDbType.Integer) { Value = int.Parse(txtAniosPosesion.Text) });
+                        cmd.Parameters.Add(new NpgsqlParameter("p_prp_observacion", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = txtObservacion.Text });
+                        cmd.Parameters.Add(new NpgsqlParameter("p_prp_tiene_escritura", NpgsqlTypes.NpgsqlDbType.Smallint) { Value = short.Parse(ddlTieneEscritura.SelectedValue) });
+                        cmd.Parameters.Add(new NpgsqlParameter("p_prp_fecha_inscripcion", NpgsqlTypes.NpgsqlDbType.Date) { Value = DateTime.Parse(txtFechaInscripcion.Text) });
+                        cmd.Parameters.Add(new NpgsqlParameter("p_prp_fecha_registro", NpgsqlTypes.NpgsqlDbType.Date) { Value = DateTime.Parse(txtFechaRegistro.Text) });
+                        cmd.Parameters.Add(new NpgsqlParameter("p_prp_area_escritura", NpgsqlTypes.NpgsqlDbType.Numeric) { Value = decimal.Parse(txtAreaEscritura.Text) });
 
                         con.Open();
                         cmd.ExecuteNonQuery();
                         con.Close();
-
-                        // Redirigir al listado después de guardar
-                        Response.Redirect("PropietariosPredios.aspx");
                     }
                 }
+
+                Response.Write("<script>alert('Registro guardado correctamente.'); window.location='PropietariosPredios.aspx';</script>");
             }
             catch (Exception ex)
             {
