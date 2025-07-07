@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
+using System.Web.UI;
 using Npgsql;
 
 namespace WebET1
@@ -42,7 +43,6 @@ namespace WebET1
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-
             try
             {
                 string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
@@ -72,11 +72,34 @@ namespace WebET1
                     }
                 }
 
-                Response.Redirect("Predios.aspx");
+                // Alerta de éxito y redirección
+                string successScript = @"
+                    Swal.fire({
+                        title: '¡Predio agregado!',
+                        text: 'El predio se ha guardado correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'Ver listado'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location = 'Predios.aspx';
+                        }
+                    });
+                ";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "swalSuccess", successScript, true);
             }
             catch (Exception ex)
             {
-                Response.Write($"<script>alert('Error al guardar: {ex.Message}');</script>");
+                // Alerta de error
+                string errMsg = ex.Message.Replace("'", "\\'");
+                string errorScript = $@"
+                    Swal.fire({{
+                        title: 'Error al guardar',
+                        text: '{errMsg}',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    }});
+                ";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "swalError", errorScript, true);
             }
         }
 
