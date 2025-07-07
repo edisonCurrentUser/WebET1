@@ -8,7 +8,7 @@
     <asp:GridView ID="GridViewPropietarios" runat="server" AutoGenerateColumns="False" AllowPaging="True" PageSize="10"
         CssClass="table table-bordered table-striped" DataKeyNames="pro_id"
         OnPageIndexChanging="GridViewPropietarios_PageIndexChanging"
-        OnRowCommand="GridViewPropietarios_RowCommand">
+        OnRowCommand="GridViewPropietarios_RowCommand" OnSelectedIndexChanged="GridViewPropietarios_SelectedIndexChanged">
         <PagerSettings Mode="NumericFirstLast" 
                        FirstPageText="« Primero"
                        LastPageText="Último »"
