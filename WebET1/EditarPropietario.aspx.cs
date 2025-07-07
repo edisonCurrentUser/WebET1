@@ -7,18 +7,59 @@ namespace WebET1
 {
     public partial class EditarPropietario : System.Web.UI.Page
     {
+        int propietarioId;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                if (Request.QueryString["pro_id"] != null)
+                if (Request.QueryString["id"] != null)
                 {
-                    int pro_id = Convert.ToInt32(Request.QueryString["pro_id"]);
-                    CargarDatos(pro_id);
+                    propietarioId = int.Parse(Request.QueryString["id"]);
+                    CargarCatalogos();
+                    CargarDatos(propietarioId);
                 }
                 else
                 {
                     Response.Redirect("Propietarios.aspx");
+                }
+            }
+        }
+
+        private void CargarCatalogos()
+        {
+            string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
+
+            using (NpgsqlConnection con = new NpgsqlConnection(conexion))
+            {
+                con.Open();
+
+                CargarCombo(con, "tipo_identificacion", ddlTipoIdentificacion);
+                CargarCombo(con, "estado_civil", ddlEstadoCivil);
+                CargarCombo(con, "tipo_conadis", ddlTipoConadis);
+                CargarCombo(con, "tipo_entidad", ddlTipoEntidad);
+
+                con.Close();
+            }
+        }
+
+        private void CargarCombo(NpgsqlConnection con, string tipoCatalogo, System.Web.UI.WebControls.DropDownList ddl)
+        {
+            using (NpgsqlCommand cmd = new NpgsqlCommand("gestion.sp_listar_catalogo_tipo", con))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_tipo_catalogo", tipoCatalogo);
+
+                using (NpgsqlDataReader dr = cmd.ExecuteReader())
+                {
+                    DataTable dt = new DataTable();
+                    dt.Load(dr);
+
+                    ddl.DataSource = dt;
+                    ddl.DataTextField = "cat_nombre";
+                    ddl.DataValueField = "cat_id";
+                    ddl.DataBind();
+                    ddl.Items.Insert(0, new System.Web.UI.WebControls.ListItem("-- Seleccione --", ""));
                 }
             }
         }
@@ -29,35 +70,46 @@ namespace WebET1
 
             using (NpgsqlConnection con = new NpgsqlConnection(conexion))
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("gestion.sp_obtener_propietario", con))
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM gestion.ges_propietario WHERE pro_id = @id", con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_pro_id", id);
-
+                    cmd.Parameters.AddWithValue("@id", id);
                     con.Open();
+
                     using (NpgsqlDataReader dr = cmd.ExecuteReader())
                     {
                         if (dr.Read())
                         {
-                            txtTipoIdentificacion.Text = dr["opc_tipoidentificacion"] != DBNull.Value ? dr["opc_tipoidentificacion"].ToString() : "";
-                            txtNumIdentificacion.Text = dr["pro_num_identificacion"] != DBNull.Value ? dr["pro_num_identificacion"].ToString() : "";
-                            txtNombre.Text = dr["pro_nombre"] != DBNull.Value ? dr["pro_nombre"].ToString() : "";
-                            txtApellido.Text = dr["pro_apellido"] != DBNull.Value ? dr["pro_apellido"].ToString() : "";
-                            txtCiudad.Text = dr["pro_direccion_ciudad"] != DBNull.Value ? dr["pro_direccion_ciudad"].ToString() : "";
-                            txtCorreo.Text = dr["pro_correo_electronico"] != DBNull.Value ? dr["pro_correo_electronico"].ToString() : "";
-                            txtTelefono.Text = dr["pro_telefono1"] != DBNull.Value ? dr["pro_telefono1"].ToString() : "";
+                            ddlTipoIdentificacion.SelectedValue = dr["opc_tipoidentificacion"].ToString();
+                            txtNumIdentificacion.Text = dr["pro_num_identificacion"].ToString();
+                            txtNombre.Text = dr["pro_nombre"].ToString();
+                            txtApellido.Text = dr["pro_apellido"].ToString();
+                            txtCiudad.Text = dr["pro_direccion_ciudad"].ToString();
+                            txtCorreo.Text = dr["pro_correo_electronico"].ToString();
+                            txtTelefono.Text = dr["pro_telefono1"].ToString();
+                            ddlEstadoCivil.SelectedValue = dr["opc_estado_civil"].ToString();
+                            ddlTipoConadis.SelectedValue = dr["opc_tipo_conadis"].ToString();
+                            ddlTipoEntidad.SelectedValue = dr["opc_tipo_entidad"].ToString();
+                        }
+                        else
+                        {
+                            Response.Redirect("Propietarios.aspx");
                         }
                     }
-                    con.Close();
                 }
             }
         }
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            if (Request.QueryString["id"] == null)
+            {
+                Response.Redirect("Propietarios.aspx");
+                return;
+            }
+
             try
             {
-                int pro_id = Convert.ToInt32(Request.QueryString["pro_id"]);
+                int id = int.Parse(Request.QueryString["id"]);
                 string conexion = ConfigurationManager.ConnectionStrings["conexionPostgres"].ConnectionString;
 
                 using (NpgsqlConnection con = new NpgsqlConnection(conexion))
@@ -66,36 +118,17 @@ namespace WebET1
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
 
-                        cmd.Parameters.AddWithValue("p_pro_id", pro_id);
-                        cmd.Parameters.AddWithValue("p_opc_tipoidentificacion", int.Parse(txtTipoIdentificacion.Text));
+                        cmd.Parameters.AddWithValue("p_pro_id", id);
+                        cmd.Parameters.AddWithValue("p_opc_tipoidentificacion", int.Parse(ddlTipoIdentificacion.SelectedValue));
                         cmd.Parameters.AddWithValue("p_pro_num_identificacion", txtNumIdentificacion.Text);
                         cmd.Parameters.AddWithValue("p_pro_nombre", txtNombre.Text);
                         cmd.Parameters.AddWithValue("p_pro_apellido", txtApellido.Text);
                         cmd.Parameters.AddWithValue("p_pro_direccion_ciudad", txtCiudad.Text);
-                        cmd.Parameters.AddWithValue("p_pro_direccion_domicilio", "");
-                        cmd.Parameters.AddWithValue("p_pro_direccion_referencia", "");
-                        cmd.Parameters.AddWithValue("p_pro_fecha_nacimiento", DBNull.Value);
-                        cmd.Parameters.AddWithValue("p_opc_estado_civil", 0);
-                        cmd.Parameters.AddWithValue("p_pro_sexo", (short)0);
                         cmd.Parameters.AddWithValue("p_pro_correo_electronico", txtCorreo.Text);
                         cmd.Parameters.AddWithValue("p_pro_telefono1", txtTelefono.Text);
-                        cmd.Parameters.AddWithValue("p_pro_telefono2", "");
-                        cmd.Parameters.AddWithValue("p_pro_codigo_postal", "");
-                        cmd.Parameters.AddWithValue("p_pro_nro_conadis", "");
-                        cmd.Parameters.AddWithValue("p_pro_porcentaje_conadis", 0);
-                        cmd.Parameters.AddWithValue("p_opc_tipo_conadis", 0);
-                        cmd.Parameters.AddWithValue("p_pro_validado", DBNull.Value);
-                        cmd.Parameters.AddWithValue("p_opc_tipo_entidad", 0);
-                        cmd.Parameters.AddWithValue("p_pro_tipo_persona", (short)0);
-                        cmd.Parameters.AddWithValue("p_pro_numero_registro", "");
-                        cmd.Parameters.AddWithValue("p_pro_genero", "");
-                        cmd.Parameters.AddWithValue("p_pro_inscrito_en", "");
-                        cmd.Parameters.AddWithValue("p_pro_lugar_inscripcion", "");
-                        cmd.Parameters.AddWithValue("p_pro_id_cliente", (long)0);
-                        cmd.Parameters.AddWithValue("p_pro_tiene_ruc", (short)0);
-                        cmd.Parameters.AddWithValue("p_pro_ruc", "");
-                        cmd.Parameters.AddWithValue("p_pro_razon_social_pn", "");
-                        cmd.Parameters.AddWithValue("p_pro_fecha_fallecido", DBNull.Value);
+                        cmd.Parameters.AddWithValue("p_opc_estado_civil", int.Parse(ddlEstadoCivil.SelectedValue));
+                        cmd.Parameters.AddWithValue("p_opc_tipo_conadis", int.Parse(ddlTipoConadis.SelectedValue));
+                        cmd.Parameters.AddWithValue("p_opc_tipo_entidad", int.Parse(ddlTipoEntidad.SelectedValue));
 
                         con.Open();
                         cmd.ExecuteNonQuery();
@@ -103,8 +136,7 @@ namespace WebET1
                     }
                 }
 
-                Response.Redirect("Propietarios.aspx", false);
-                Context.ApplicationInstance.CompleteRequest();
+                Response.Redirect("Propietarios.aspx");
             }
             catch (Exception ex)
             {

@@ -27,8 +27,11 @@
 
             <asp:TemplateField HeaderText="Acciones">
                 <ItemTemplate>
-                    <asp:Button ID="btnEditar" runat="server" CommandName="Editar" Text="Editar" CommandArgument="<%# Container.DataItemIndex %>" CssClass="btn btn-warning btn-sm" />
-                    <asp:Button ID="btnEliminar" runat="server" CommandName="Eliminar" Text="Eliminar" CommandArgument="<%# Container.DataItemIndex %>" CssClass="btn btn-danger btn-sm ml-2" OnClientClick="return confirm('¿Está seguro de eliminar este registro?');" />
+                    <asp:Button ID="btnEditar" runat="server" CommandName="Editar" Text="Editar"
+                        CommandArgument='<%# Eval("pro_id") %>' CssClass="btn btn-warning btn-sm" />
+                    <asp:Button ID="btnEliminar" runat="server" CommandName="Eliminar" Text="Eliminar"
+                        CommandArgument='<%# Eval("pro_id") %>' CssClass="btn btn-danger btn-sm ml-2"
+                        OnClientClick="return confirm('¿Está seguro de eliminar este registro?');" />
                 </ItemTemplate>
             </asp:TemplateField>
         </Columns>

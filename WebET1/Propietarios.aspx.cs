@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
+using System.Web.UI.WebControls;
 using Npgsql;
 
 namespace WebET1
@@ -48,22 +49,18 @@ namespace WebET1
             CargarPropietarios();
         }
 
-        protected void GridViewPropietarios_RowCommand(object sender, System.Web.UI.WebControls.GridViewCommandEventArgs e)
+        protected void GridViewPropietarios_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName == "Editar" || e.CommandName == "Eliminar")
+            if (e.CommandName == "Editar")
             {
-                int index = Convert.ToInt32(e.CommandArgument);
-                int pro_id = Convert.ToInt32(GridViewPropietarios.DataKeys[index].Value);
-
-                if (e.CommandName == "Editar")
-                {
-                    Response.Redirect($"EditarPropietario.aspx?pro_id={pro_id}");
-                }
-                else if (e.CommandName == "Eliminar")
-                {
-                    EliminarPropietario(pro_id);
-                    CargarPropietarios();
-                }
+                int id = Convert.ToInt32(e.CommandArgument);
+                Response.Redirect("EditarPropietario.aspx?id=" + id);
+            }
+            else if (e.CommandName == "Eliminar")
+            {
+                int id = Convert.ToInt32(e.CommandArgument);
+                EliminarPropietario(id);
+                CargarPropietarios();
             }
         }
 
